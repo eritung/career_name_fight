@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>辦公室職場決鬥場</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+:root{
+  --bg:#f0ebe0;--bg2:#e8e2d4;--bg3:#ddd6c4;
+  --ink:#1a1a1a;--ink2:#333;--muted:#888;
+  --yellow:#ffe566;--yellow2:#ffd700;--yellow3:#ffec8a;
+  --pink:#ffb3c6;--blue:#b3d4ff;--green:#b3ffcc;--orange:#ffd9b3;
+  --p1:#5b4fcf;--p1l:#8b7fe8;--p2:#c0392b;--p2l:#e05050;
+  --border:rgba(0,0,0,0.1);
+  --shadow:0 2px 8px rgba(0,0,0,0.08);
+  --eng:#5b4fcf;--des:#e91e8c;--pm:#e67e22;--biz:#27ae60;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Noto Sans TC',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  padding:2rem 1rem 4rem;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(180,200,255,0.15) 27px,rgba(180,200,255,0.15) 28px),
+    repeating-linear-gradient(90deg,transparent,transparent 27px,rgba(180,200,255,0.08) 27px,rgba(180,200,255,0.08) 28px);
+}
+
+/* ── 標題 ── */
+.page-header{text-align:center;margin-bottom:2rem;position:relative;}
+.page-header h1{font-size:clamp(1.6rem,4vw,2.6rem);font-weight:900;color:var(--ink);letter-spacing:0.05em;line-height:1.2;}
+.page-header h1 .highlight{background:var(--yellow);padding:0 6px;border-radius:2px;transform:rotate(-1deg);display:inline-block;}
+.page-header .subtitle{font-size:12px;color:var(--muted);margin-top:8px;letter-spacing:0.1em;}
+.hint{font-size:11px;color:var(--muted);margin-top:10px;}
+
+/* ── 便利貼裝飾 ── */
+.sticky{
+  display:inline-block;padding:6px 12px;border-radius:2px;font-size:11px;font-weight:700;
+  transform:rotate(-2deg);box-shadow:2px 3px 6px rgba(0,0,0,0.15);letter-spacing:0.05em;
+}
+.sticky-y{background:var(--yellow);color:var(--ink);}
+.sticky-p{background:var(--pink);color:var(--ink);}
+.sticky-b{background:var(--blue);color:var(--ink);}
+.sticky-g{background:var(--green);color:var(--ink);}
+.sticky-o{background:var(--orange);color:var(--ink);}
+
+/* ── Layout ── */
+.page-wrap{display:flex;gap:1.5rem;align-items:flex-start;max-width:1160px;margin:0 auto;}
+.main-col{flex:1;min-width:0;}
+.side-col{width:260px;flex-shrink:0;position:sticky;top:1.5rem;}
+
+/* ── 結果橫幅 ── */
+.result-banner{
+  margin-bottom:1.5rem;
+  background:var(--yellow);border:2px solid var(--yellow2);border-radius:4px;
+  padding:1.5rem;text-align:center;display:none;
+  box-shadow:var(--shadow);transform:rotate(-0.3deg);
+}
+.result-banner.show{display:block;}
+.result-banner-title{font-size:clamp(1.4rem,4vw,2rem);font-weight:900;color:var(--ink);letter-spacing:0.1em;margin-bottom:6px;}
+.result-banner-sub{font-size:13px;color:var(--ink2);}
+
+/* ── 部門卡 ── */
+.dept-section{display:grid;grid-template-columns:1fr 56px 1fr;gap:1rem;margin-bottom:1.5rem;}
+.dept-card{background:#fff;border:1.5px solid var(--border);border-radius:4px;padding:1rem 1.25rem;min-height:70px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);}
+.dept-icon{font-size:24px;flex-shrink:0;}
+.dept-name{font-size:13px;font-weight:700;margin-bottom:3px;}
+.dept-desc{font-size:11px;color:var(--muted);}
+.dept-card.eng{border-left:4px solid var(--eng);}
+.dept-card.des{border-left:4px solid var(--des);}
+.dept-card.pm{border-left:4px solid var(--pm);}
+.dept-card.biz{border-left:4px solid var(--biz);}
+.dept-card.eng .dept-name{color:var(--eng);}
+.dept-card.des .dept-name{color:var(--des);}
+.dept-card.pm .dept-name{color:var(--pm);}
+.dept-card.biz .dept-name{color:var(--biz);}
+.dept-placeholder{color:var(--muted);font-size:11px;font-style:italic;}
+.dept-col{display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);letter-spacing:0.1em;}
+
+/* ── 戰士卡 ── */
+.fighters{display:grid;grid-template-columns:1fr 56px 1fr;gap:1rem;align-items:start;margin-bottom:1.5rem;}
+.fighter-card{
+  background:#fff;border:1.5px solid var(--border);border-radius:4px;
+  padding:1.5rem 1.25rem 1.25rem;position:relative;
+  box-shadow:3px 3px 10px rgba(0,0,0,0.07);
+}
+.fighter-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:4px 4px 0 0;}
+.fighter-card.p1::before{background:var(--p1l);}
+.fighter-card.p2::before{background:var(--p2l);}
+.fighter-card.winner{border-color:var(--yellow2);background:#fffde8;box-shadow:0 0 16px rgba(255,215,0,0.3);}
+.fighter-card.collapse-p1,.fighter-card.collapse-p2{border-color:#e74c3c;box-shadow:0 0 12px rgba(231,76,60,0.2);}
+
+.avatar{
+  width:52px;height:52px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:900;
+  margin:0 auto 10px;
+  border:2px solid var(--border);
+  background:var(--bg);
+}
+.p1 .avatar{background:#eeedfb;border-color:rgba(91,79,207,0.3);color:var(--p1);}
+.p2 .avatar{background:#fbeeed;border-color:rgba(192,57,43,0.3);color:var(--p2);}
+
+/* Name input */
+.name-input-wrap{position:relative;margin-bottom:1rem;}
+.name-input-label{display:block;font-size:10px;color:var(--muted);letter-spacing:0.2em;text-align:center;margin-bottom:6px;font-weight:700;}
+.name-input{
+  width:100%;
+  background:var(--yellow3);
+  border:2px solid var(--yellow2);border-radius:3px;
+  color:var(--ink);font-size:18px;font-weight:700;
+  text-align:center;letter-spacing:0.1em;
+  padding:10px 8px;outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);
+}
+.name-input:focus{border-color:var(--yellow2);box-shadow:0 0 0 3px rgba(255,215,0,0.25);}
+.name-input::placeholder{color:rgba(0,0,0,0.3);font-weight:400;font-size:14px;}
+
+/* HP */
+.hp-section{margin-bottom:1rem;}
+.hp-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+.hp-top span:first-child{font-size:10px;color:var(--muted);letter-spacing:0.15em;font-weight:700;}
+.hp-top span:last-child{font-size:13px;font-weight:700;color:var(--ink);}
+.hp-track{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;border:1px solid var(--border);}
+.hp-fill{height:100%;border-radius:4px;transition:width 0.5s ease;}
+.p1 .hp-fill{background:linear-gradient(90deg,var(--p1),var(--p1l));}
+.p2 .hp-fill{background:linear-gradient(90deg,var(--p2),var(--p2l));}
+
+/* Stats */
+.stats{margin-bottom:1rem;}
+.stat-row{display:flex;align-items:center;gap:8px;margin:5px 0;}
+.stat-label{font-size:10px;color:var(--muted);letter-spacing:0.05em;width:32px;flex-shrink:0;font-weight:700;}
+.stat-track{flex:1;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden;}
+.stat-fill{height:100%;border-radius:3px;transition:width 0.4s ease;}
+.p1 .stat-fill{background:var(--p1l);}
+.p2 .stat-fill{background:var(--p2l);}
+.stat-val{font-size:12px;font-weight:700;color:var(--ink2);width:26px;text-align:right;flex-shrink:0;}
+
+/* Tags */
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1rem;}
+.tag{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;border:1.5px solid;}
+.tag-eng{background:#eeedfb;color:var(--eng);border-color:rgba(91,79,207,0.3);}
+.tag-des{background:#fde8f4;color:var(--des);border-color:rgba(233,30,140,0.3);}
+.tag-pm{background:#fef3e8;color:var(--pm);border-color:rgba(230,126,34,0.3);}
+.tag-biz{background:#e8f8ee;color:var(--biz);border-color:rgba(39,174,96,0.3);}
+.tag-neutral{background:var(--bg2);color:var(--muted);border-color:var(--border);}
+
+/* Skills */
+.skill-section{border-top:2px dashed var(--border);padding-top:10px;}
+.skill-section-title{font-size:10px;color:var(--muted);letter-spacing:0.2em;margin-bottom:8px;font-weight:700;}
+.skill-item{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;margin-bottom:6px;position:relative;}
+.skill-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:4px 0 0 4px;}
+.skill-item.atk-skill::before{background:var(--p2l);}
+.skill-item.def-skill::before{background:var(--p1l);}
+.skill-item.spd-skill::before{background:var(--biz);}
+.skill-item.ult-skill::before{background:var(--yellow2);}
+.skill-name-row{display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap;}
+.skill-name{font-size:13px;font-weight:700;color:var(--ink);}
+.skill-badge{font-size:9px;padding:1px 6px;border-radius:20px;font-weight:700;border:1.5px solid;}
+.badge-atk{background:#fbeeed;color:var(--p2);border-color:rgba(192,57,43,0.3);}
+.badge-def{background:#eeedfb;color:var(--p1);border-color:rgba(91,79,207,0.3);}
+.badge-spd{background:#e8f8ee;color:var(--biz);border-color:rgba(39,174,96,0.3);}
+.badge-ult{background:var(--yellow);color:var(--ink);border-color:var(--yellow2);}
+.skill-desc{font-size:11px;color:var(--muted);}
+.skill-cd{font-size:9px;color:var(--muted);font-weight:700;}
+
+/* VS col */
+.vs-col{display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:3.5rem;gap:10px;}
+.vs-text{font-size:22px;font-weight:900;color:var(--ink);letter-spacing:0.1em;background:var(--yellow);padding:4px 10px;border-radius:4px;transform:rotate(-2deg);box-shadow:2px 2px 6px rgba(0,0,0,0.1);}
+.vs-dot{width:4px;height:4px;border-radius:50%;background:var(--border);}
+
+/* Fight button */
+.fight-btn{
+  display:block;width:100%;padding:14px;
+  font-size:16px;font-weight:900;letter-spacing:0.2em;
+  color:var(--ink);background:var(--yellow);
+  border:2px solid var(--yellow2);border-radius:4px;
+  cursor:pointer;transition:background 0.15s,transform 0.1s;
+  margin-bottom:1.25rem;
+  box-shadow:3px 3px 0 var(--yellow2);
+}
+.fight-btn:hover{background:var(--yellow2);}
+.fight-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--yellow2);}
+.fight-btn:disabled{background:var(--bg2);color:var(--muted);cursor:not-allowed;box-shadow:none;border-color:var(--border);}
+
+/* Sidebar */
+.battle-status{
+  background:#fff;border:1.5px solid var(--border);border-radius:4px;
+  padding:1.25rem 1rem;display:flex;flex-direction:column;gap:1rem;
+  box-shadow:var(--shadow);
+}
+.status-label{font-size:10px;color:var(--muted);letter-spacing:0.2em;text-align:center;font-weight:700;}
+.status-vs{font-size:14px;font-weight:900;color:var(--ink);text-align:center;padding:2px 0;}
+.status-divider{height:2px;background:repeating-linear-gradient(90deg,var(--yellow) 0,var(--yellow) 6px,transparent 6px,transparent 10px);}
+.status-fighter{display:flex;flex-direction:column;gap:5px;}
+.status-name{font-size:13px;font-weight:700;}
+.status-name.p1c{color:var(--p1);}
+.status-name.p2c{color:var(--p2);}
+.status-hp-row{display:flex;align-items:center;gap:6px;}
+.status-hp-track{flex:1;height:7px;background:var(--bg2);border-radius:4px;overflow:hidden;border:1px solid var(--border);}
+.status-hp-fill{height:100%;border-radius:4px;transition:width 0.5s ease;}
+.status-hp-fill.p1f{background:var(--p1l);}
+.status-hp-fill.p2f{background:var(--p2l);}
+.status-hp-val{font-size:12px;font-weight:700;color:var(--ink2);min-width:30px;text-align:right;}
+.status-round{font-size:11px;color:var(--muted);letter-spacing:0.1em;text-align:center;font-weight:700;}
+.status-collapse{font-size:11px;color:#e74c3c;font-weight:700;text-align:center;}
+
+/* Battle Log */
+.battle-log{background:transparent;padding:0;min-height:60px;max-height:420px;overflow-y:auto;font-size:12px;line-height:1.85;scrollbar-width:thin;scrollbar-color:rgba(0,0,0,0.15) transparent;}
+.battle-log::-webkit-scrollbar{width:3px;}
+.battle-log::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:2px;}
+.log-atk{color:var(--ink2);}
+.log-skill-p1{color:var(--p1);font-weight:500;}
+.log-skill-p2{color:var(--p2);font-weight:500;}
+.log-event{color:#e67e22;font-weight:700;}
+.log-miss{color:var(--muted);font-style:italic;}
+.log-fate{color:#8b6914;font-style:italic;}
+.log-sep{color:var(--muted);}
+.log-collapse{color:#e67e22;font-weight:700;}
+.log-revenge{color:#e74c3c;font-weight:700;}
+.log-revive{color:var(--p1);font-weight:700;}
+.log-boss{color:#8b6914;font-weight:700;}
+
+/* Collapse */
+.collapse-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;background:#fbeeed;color:#e74c3c;border:1.5px solid rgba(231,76,60,0.3);margin-top:6px;font-weight:700;}
+
+@media(max-width:720px){
+  .page-wrap{flex-direction:column;}
+  .side-col{width:100%;position:static;}
+  .fighters,.dept-section{grid-template-columns:1fr;}
+  .vs-col,.dept-col{flex-direction:row;padding-top:0;padding:0.5rem 0;}
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>🏢 <span class="highlight">辦公室</span> 職場決鬥場</h1>
+  <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+    <span class="sticky sticky-y" style="transform:rotate(-3deg)">截止日爆炸中</span>
+    <span class="sticky sticky-p" style="transform:rotate(2deg)">會議又開了</span>
+    <span class="sticky sticky-b" style="transform:rotate(-1deg)">demo呢？</span>
+    <span class="sticky sticky-g" style="transform:rotate(3deg)">改需求ing</span>
+  </div>
+  <div class="subtitle" style="margin-top:12px;">以名字決定職場戰鬥力，向無理需求宣戰</div>
+  <div class="hint">✦ 在下方輸入兩位同事的名字，開始決鬥 ✦</div>
+</div>
+
+<div class="page-wrap">
+<div class="main-col">
+
+  <div class="result-banner" id="resultBanner">
+    <div class="result-banner-title" id="resultTitle"></div>
+    <div class="result-banner-sub" id="resultSub"></div>
+  </div>
+
+  <!-- 部門區 -->
+  <div class="dept-section">
+    <div class="dept-card" id="dept1"><span class="dept-placeholder">部門將於開戰前揭曉</span></div>
+    <div class="dept-col">部門</div>
+    <div class="dept-card" id="dept2"><span class="dept-placeholder">部門將於開戰前揭曉</span></div>
+  </div>
+
+  <div class="fighters">
+    <div class="fighter-card p1" id="card1">
+      <div class="avatar" id="av1">？</div>
+      <div class="name-input-wrap">
+        <label class="name-input-label">✏️ 輸入同事名字</label>
+        <input class="name-input" id="name1" type="text" placeholder="輸入名字" maxlength="10" value="小美" oninput="updateCard(1)"/>
+      </div>
+      <div class="hp-section">
+        <div class="hp-top"><span>體力值</span><span id="hp1-val">—</span></div>
+        <div class="hp-track"><div class="hp-fill" id="hp1-bar" style="width:100%"></div></div>
+      </div>
+      <div class="stats">
+        <div class="stat-row"><span class="stat-label">攻擊</span><div class="stat-track"><div class="stat-fill" id="atk1-bar"></div></div><span class="stat-val" id="atk1">-</span></div>
+        <div class="stat-row"><span class="stat-label">防禦</span><div class="stat-track"><div class="stat-fill" id="def1-bar"></div></div><span class="stat-val" id="def1">-</span></div>
+        <div class="stat-row"><span class="stat-label">速度</span><div class="stat-track"><div class="stat-fill" id="spd1-bar"></div></div><span class="stat-val" id="spd1">-</span></div>
+        <div class="stat-row"><span class="stat-label">耐壓</span><div class="stat-track"><div class="stat-fill" id="lck1-bar"></div></div><span class="stat-val" id="lck1">-</span></div>
+      </div>
+      <div class="tags" id="tags1"></div>
+      <div class="skill-section">
+        <div class="skill-section-title">📋 職場技能</div>
+        <div id="skills1"></div>
+      </div>
+    </div>
+    <div class="vs-col"><div class="vs-dot"></div><div class="vs-text">VS</div><div class="vs-dot"></div></div>
+    <div class="fighter-card p2" id="card2">
+      <div class="avatar" id="av2">？</div>
+      <div class="name-input-wrap">
+        <label class="name-input-label">✏️ 輸入同事名字</label>
+        <input class="name-input" id="name2" type="text" placeholder="輸入名字" maxlength="10" value="小志" oninput="updateCard(2)"/>
+      </div>
+      <div class="hp-section">
+        <div class="hp-top"><span>體力值</span><span id="hp2-val">—</span></div>
+        <div class="hp-track"><div class="hp-fill" id="hp2-bar" style="width:100%"></div></div>
+      </div>
+      <div class="stats">
+        <div class="stat-row"><span class="stat-label">攻擊</span><div class="stat-track"><div class="stat-fill" id="atk2-bar"></div></div><span class="stat-val" id="atk2">-</span></div>
+        <div class="stat-row"><span class="stat-label">防禦</span><div class="stat-track"><div class="stat-fill" id="def2-bar"></div></div><span class="stat-val" id="def2">-</span></div>
+        <div class="stat-row"><span class="stat-label">速度</span><div class="stat-track"><div class="stat-fill" id="spd2-bar"></div></div><span class="stat-val" id="spd2">-</span></div>
+        <div class="stat-row"><span class="stat-label">耐壓</span><div class="stat-track"><div class="stat-fill" id="lck2-bar"></div></div><span class="stat-val" id="lck2">-</span></div>
+      </div>
+      <div class="tags" id="tags2"></div>
+      <div class="skill-section">
+        <div class="skill-section-title">📋 職場技能</div>
+        <div id="skills2"></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="fight-btn" id="fightBtn" onclick="startBattle()">🥊 開始職場決鬥！</button>
+
+</div><!-- /main-col -->
+
+<div class="side-col">
+  <div class="battle-status">
+    <div class="status-label">📊 即時戰況</div>
+    <div class="status-fighter">
+      <div class="status-name p1c" id="sn1">—</div>
+      <div class="status-hp-row">
+        <div class="status-hp-track"><div class="status-hp-fill p1f" id="shp1-bar" style="width:100%"></div></div>
+        <div class="status-hp-val" id="shp1">—</div>
+      </div>
+    </div>
+    <div class="status-vs">⚔️ VS ⚔️</div>
+    <div class="status-fighter">
+      <div class="status-name p2c" id="sn2">—</div>
+      <div class="status-hp-row">
+        <div class="status-hp-track"><div class="status-hp-fill p2f" id="shp2-bar" style="width:100%"></div></div>
+        <div class="status-hp-val" id="shp2">—</div>
+      </div>
+    </div>
+    <div class="status-divider"></div>
+    <div class="status-round" id="sRound">等待開戰...</div>
+    <div class="status-collapse" id="sCollapse"></div>
+    <div class="battle-log" id="log"></div>
+  </div>
+</div>
+</div><!-- /page-wrap -->
+
+<script>
+// ── 職場屬性：字的特性決定 ──
+// 工程師(eng)：筆畫多、理性
+// 設計師(des)：含特定字、感性
+// PM：字數多、協調
+// 業務(biz)：字少、外向
+
+// ── 動態職業系統：根據名字特性生成職稱 ──
+// 筆畫總數、字數、特定字組合決定職業類型（共 12 種），不限死
+
+const JOB_TABLE=[
+  {key:'engineer', name:'資深工程師', icon:'💻', cls:'eng', desc:'ATK+8 耐壓+12 — 靠邏輯碾壓', atkBonus:8,lckBonus:12,
+   skills_a:['遲交 demo','把 bug 說成 feature','需求說不清楚別怪我','commit 訊息只寫 fix','文件？什麼文件','用術語讓你聽不懂','這是 PM 的問題','程式碼直接跑'],
+   skills_b:['說這要排期','我本機沒問題','deadline 前消失術','改一個壞三個','說要重構','環境問題啦','沉默抗議不回訊息','開會時猛盯筆電'],
+   ult:['·系統大當機','·Git 衝突風暴','·環境整個炸掉','·需求無限延伸'],
+   type_a:'atk',type_b:'debuff',miss_a:0.15,miss_b:0.1},
+  {key:'creator', name:'創意總監', icon:'🎨', cls:'des', desc:'防禦+10 速度+8 — 創意就是武器', defBonus:10,spdBonus:8,
+   skills_a:['設計稿只有一種選擇','字體選了 Comic Sans','配色讓你眼睛不舒服','把 LOGO 做滿整頁','留白留到沒有內容','加了 27 層陰影','圖片用了 1px 邊框','把文字縮到看不見'],
+   skills_b:['說這不符合品牌調性','說需要更多發想時間','Figma 檔案鎖住不給','改不完的版本 v47','說設計需要感覺','用漸層蓋掉你的意見','把回饋說成不懂美學','改一個 pixel 說沒差'],
+   ult:['·像素大反擊','·色彩崩壞術','·設計稿第99版','·全版無字純視覺'],
+   type_a:'atk',type_b:'def',miss_a:0.2,miss_b:0},
+  {key:'pm', name:'專案經理', icon:'📋', cls:'pm', desc:'ATK+10 防禦+5 — 協調萬物', atkBonus:10,defBonus:5,
+   skills_a:['故意叫錯你名字','遲交製作說明','在群組艾特全員','開了一小時的會','截止日再次提前','把別人功勞寫進報告','說這應該很簡單','改需求不跟工程師說'],
+   skills_b:['說這在範疇之外','把問題變成 action item','說明文件發了但沒人看','甩鍋給跨部門','說要對齊一下','晨報突然加你','建了一個新的追蹤表','在週報寫「進度落後」'],
+   ult:['·無限需求術','·甩鍋連環陣','·會議召喚矩陣','·對齊宇宙終極版'],
+   type_a:'atk',type_b:'debuff',miss_a:0.12,miss_b:0.08},
+  {key:'datascience', name:'數據科學家', icon:'📊', cls:'eng', desc:'ATK+6 耐壓+14 — 數據說話', atkBonus:6,lckBonus:14,
+   skills_a:['用圖表讓你看不懂','說相關不等於因果','把 p 值說到你崩潰','模型說是這樣的','說需要更多資料','拿統計數字壓死你','說這個 outlier 要排除','建了一個你看不懂的 dashboard'],
+   skills_b:['說模型還在訓練中','說這要跑一個晚上','問說有沒有標記好的資料','說特徵工程還沒做完','把結果說得很不確定','說需要更多運算資源','說這個要重新跑','把置信區間解釋了 20 分鐘'],
+   ult:['·大數據終結砲','·模型過擬合風暴','·資料清洗無盡迴圈','·AI 預測大爆炸'],
+   type_a:'atk',type_b:'debuff',miss_a:0.1,miss_b:0.15},
+  {key:'marketing', name:'行銷企劃', icon:'📢', cls:'des', desc:'速度+10 ATK+8 — 聲量就是武器', spdBonus:10,atkBonus:8,
+   skills_a:['做了一張根本看不懂的圖表','說要病毒式行銷','提案裡全是流行語','說競品都在做這個','截圖貼給你說就這樣','說這個一定會爆','把 KPI 設到不可能達成','把活動說得超簡單'],
+   skills_b:['說需要更多曝光','問說為什麼沒在 IG 上','改文案改到第 23 版','說品牌一致性很重要','每週發一份報告追進度','問說 CTA 夠不夠強','說要做 A/B testing','要求加一個分享按鈕'],
+   ult:['·全渠道爆炸術','·聲量輾壓砲','·品牌終極重塑','·病毒行銷大爆發'],
+   type_a:'atk',type_b:'debuff',miss_a:0.18,miss_b:0.1},
+  {key:'journalist', name:'新聞記者', icon:'📰', cls:'biz', desc:'速度+14 ATK+6 — 筆比劍快', spdBonus:14,atkBonus:6,
+   skills_a:['說「我有消息來源」','把話斷章取義','問了一個超尖銳的問題','說正在調查中','突然爆料讓你措手不及','把現場直播開起來','說這個有新聞價值','用標題黨讓你跳腳'],
+   skills_b:['說「無可奉告」不適用','問說你有什麼回應','說讀者有知的權利','把採訪錄音放出來','問說這是否屬實','說截稿時間快到了','持續追問不給你逃','說三點前要給聲明'],
+   ult:['·頭版頭條爆擊','·獨家爆料風暴','·全版報導輾壓','·新聞輿論終結技'],
+   type_a:'atk',type_b:'atk',miss_a:0.15,miss_b:0.12},
+  {key:'youtuber', name:'網紅YouTuber', icon:'🎬', cls:'des', desc:'速度+12 耐壓+8 — 流量就是一切', spdBonus:12,lckBonus:8,
+   skills_a:['說訂閱人數比你多','把你拍進影片沒問你','說這個可以做成內容','突然開直播讓你亂','說這個要先商業合作','把你的話剪進短影片','說粉絲說要這樣','貼出一個誤導性縮圖'],
+   skills_b:['說在等廠商回覆','說現在在拍素材','問說可不可以業配','說要先研究演算法','改片名改到你跑掉','說這集數據不好看','說現在不是發片時機','把影片下架再重傳'],
+   ult:['·百萬訂閱爆擊','·演算法終極術','·業配炸裂大砲','·全平台聲量輾壓'],
+   type_a:'atk',type_b:'debuff',miss_a:0.2,miss_b:0.12},
+  {key:'doctor', name:'急診醫師', icon:'🩺', cls:'pm', desc:'ATK+12 防禦+8 — 冷靜就是力量', atkBonus:12,defBonus:8,
+   skills_a:['說這要住院觀察','開了一堆檢查讓你等','用醫學術語讓你聽不懂','說這個有點複雜','直接拿針刺你不說話','說先把這個排除','叫護士來讓你等','說症狀不典型要再觀察'],
+   skills_b:['說要再等報告','說今天床位滿了','問說有沒有過敏史','把病歷翻了半天','說先掛號再說','問說保險有沒有涵蓋','叫你去掛另一個科','說這個不在我的專科裡'],
+   ult:['·確診終極宣言','·檢查清單大爆炸','·會診召喚風暴','·病歷全面揭露'],
+   type_a:'atk',type_b:'def',miss_a:0.08,miss_b:0},
+  {key:'teacher', name:'高中老師', icon:'📚', cls:'pm', desc:'防禦+10 耐壓+12 — 耐心是武器', defBonus:10,lckBonus:12,
+   skills_a:['突然抽問讓你措手不及','說這個上課講過了','把你的手機沒收','說再這樣就叫家長','期中考出了史上最難的題','說放學留下來談','把你的作業當反例','說請翻到第47頁'],
+   skills_b:['說這個下週考','叫你去黑板寫','說這題提示夠了自己想','問說有沒有人不懂','說作業要交才算','把考卷發回來不解題','說下課再問我','再強調一次考試重點'],
+   ult:['·期末考決勝負','·學測範圍大公布','·補考通知終結技','·家長聯絡簿風暴'],
+   type_a:'atk',type_b:'def',miss_a:0.1,miss_b:0},
+  {key:'lawyer', name:'律師', icon:'⚖️', cls:'eng', desc:'ATK+10 防禦+10 — 條文就是盾', atkBonus:10,defBonus:10,
+   skills_a:['引用第幾條第幾項讓你傻眼','說這有法律問題','把合約翻出來讓你看','說你這樣是違約','發了一封存證信函','說我的當事人保持沉默','把對方說的話記錄起來','說這個要先確認管轄'],
+   skills_b:['說這個要等法院裁定','把起訴書念給你聽','說要召開準備程序','問說你有沒有簽名','說舉證責任在你','把時效問題提出來','說我需要閱覽卷宗','要求對方出具書面說明'],
+   ult:['·訴訟終極大砲','·合約逐條輾壓','·法庭審判風暴','·損害賠償最終請求'],
+   type_a:'atk',type_b:'def',miss_a:0.08,miss_b:0},
+  {key:'chef', name:'主廚', icon:'👨‍🍳', cls:'des', desc:'ATK+10 速度+8 — 刀工就是戰技', atkBonus:10,spdBonus:8,
+   skills_a:['說這道菜需要提前預約','用食材讓你等20分鐘','說這個不在今日菜單','把火調到最大嚇你','說你點的東西沒有了','出了一道你看不懂的菜','說這個要等產季','問你說鹽要幾公克'],
+   skills_b:['說你沒有預約','說廚房現在很忙','問說辣度要幾分','說這個客製化要加價','把你的餐退回去重做','說這道需要等20分鐘','問說有沒有過敏','說今天的特餐賣完了'],
+   ult:['·米其林等級爆擊','·主廚特製限量版','·廚房火舌終結砲','·秘製醬汁大輾壓'],
+   type_a:'atk',type_b:'debuff',miss_a:0.12,miss_b:0.08},
+  {key:'barista', name:'咖啡師', icon:'☕', cls:'biz', desc:'速度+14 防禦+6 — 咖啡因就是力量', spdBonus:14,defBonus:6,
+   skills_a:['把你的名字拼錯','問你說要幾分糖幾分冰','說這個口味今天沒有','做了一杯讓你說不出話的拉花','說要等一下前面還有幾杯','問你說大杯還是特大杯','說這個要現磨需要等','突然說機器在清洗中'],
+   skills_b:['說 oat milk 要另外加價','問說要不要加 extra shot','說你點的已經停售了','問說要不要加焦糖醬','說今天豆子換了口味不同','問說冷的還是熱的','說這個要多等五分鐘','加了一個你沒點的配料'],
+   ult:['·咖啡因超載終結術','·拉花必殺技','·特調大輾壓','·限定口味最後一杯'],
+   type_a:'atk',type_b:'debuff',miss_a:0.15,miss_b:0.1},
+  {key:'rider', name:'外送員', icon:'🛵', cls:'biz', desc:'速度+18 ATK-5 — 快就是一切', spdBonus:18,atkMalus:5,
+   skills_a:['說樓梯間找不到你','說門鈴按了沒反應','問說要放哪裡','說GPS帶我走錯路','說快到了但還在遠端','問說幾樓幾號','說我打了電話沒人接','說電梯壞了要爬樓梯'],
+   skills_b:['說已送達但你沒看到','問說評分可不可以五顆星','說袋子密封好了','問說哪個是你的餐','說餐廳出餐比較慢','問說有沒有叫到名字','說剛剛有打電話','把餐放門口直接跑'],
+   ult:['·極速配送衝撞','·找不到你大爆炸','·五星好評終結術','·全程保溫最終形態'],
+   type_a:'atk',type_b:'atk',miss_a:0.25,miss_b:0.2},
+  {key:'sales', name:'業務天王', icon:'📞', cls:'biz', desc:'速度+12 耐壓+8 — 口才制勝', spdBonus:12,lckBonus:8,
+   skills_a:['說客戶說的','臨時插單','說這超簡單只要一天','帶業績壓力降臨','說上面說要的','把需求說得很模糊','在最後一刻加規格','報價報到對方離開'],
+   skills_b:['說「請協助配合」','帶主管一起問進度','說競品都有這個功能','用 LINE 傳 7 段語音','報告說達標率 101%','說客戶等很久了','週五下班前寄確認信','說這是低優先但要明天'],
+   ult:['·業績終結技','·客戶炸裂砲','·需求大爆炸','·截止日最後通牒'],
+   type_a:'atk',type_b:'atk',miss_a:0.18,miss_b:0.12},
+  {key:'finance', name:'財務分析師', icon:'💹', cls:'eng', desc:'ATK+6 防禦+10 — 數字就是力量', atkBonus:6,defBonus:10,
+   skills_a:['說預算不夠','凍結費用申請','砍掉你的出差計畫','用 Excel 反駁你','說 ROI 不達標','把報帳退回重填','預算會議突然加你','說這不在今年計畫裡'],
+   skills_b:['拿數字讓你閉嘴','說要做財務評估','把決定推到下季','要求三個報價比較','說現金流有問題','重算了一遍讓你等','建立財務審核流程','說要過 CFO 核准'],
+   ult:['·預算終結宣言','·財報大碾壓','·凍結所有支出','·審計風暴來臨'],
+   type_a:'atk',type_b:'def',miss_a:0.12,miss_b:0},
+  {key:'banker', name:'銀行理專', icon:'🏦', cls:'pm', desc:'速度+6 防禦+12 — 合規就是鐵壁', spdBonus:6,defBonus:12,
+   skills_a:['說這個產品很適合你','把手續費說得很小聲','問說有沒有興趣做定存','拿了一堆文件讓你簽','說這個優惠只到今天','問說要不要辦信用卡','說利率很划算','推薦了一個你不需要的保險'],
+   skills_b:['說需要本人親自來','說這個要審核三到五天','問說有沒有帶印章','說這個帳戶有異常要凍結','問說資金來源為何','說這個要填申請書','叫你去叫號等叫到','說今天額度用完了'],
+   ult:['·金融監管大砲','·授信審查風暴','·帳戶凍結終結技','·利率條款全面輾壓'],
+   type_a:'def',type_b:'def',miss_a:0,miss_b:0},
+  {key:'musician', name:'音樂創作者', icon:'🎵', cls:'des', desc:'耐壓+12 速度+8 — 節奏就是力量', lckBonus:12,spdBonus:8,
+   skills_a:['說這段旋律版權是我的','突然即興演奏讓你分心','說你聽不懂這個編曲','把音量開到最大','說這首歌有特殊含義','轉調讓你完全跟不上','說需要安靜的環境創作','把你說的話填進歌詞'],
+   skills_b:['說靈感需要時間','說現在在錄音不方便','問說能不能小聲一點','說這個音符不對','把樂器收起來不演奏','說這個需要再練習','問說有沒有在聽','說現在不在狀態'],
+   ult:['·絕對音感終結技','·舞台爆炸大砲','·創作靈感大輾壓','·演唱會最終形態'],
+   type_a:'atk',type_b:'def',miss_a:0.2,miss_b:0.05},
+  {key:'actor', name:'演員', icon:'🎭', cls:'des', desc:'速度+10 耐壓+10 — 情緒就是武器', spdBonus:10,lckBonus:10,
+   skills_a:['突然入戲嚇到你','說角色需要這樣做','把台詞說成自己的想法','在最不對的時機哭出來','說這個場景需要重拍','對你NG讓你重新來','說這個表情不到位','把情緒帶回現實生活'],
+   skills_b:['說在想角色的心情','說需要準備一下','問說這個鏡頭怎麼拍','說這不是我的風格','把表演說成人生哲學','說這場戲需要醞釀','問說導演是什麼意思','說這個台詞不自然'],
+   ult:['·奧斯卡等級爆擊','·即興表演大輾壓','·情緒勒索終結技','·最後一場戲壓軸'],
+   type_a:'atk',type_b:'debuff',miss_a:0.18,miss_b:0.1},
+  {key:'writer', name:'作家', icon:'✍️', cls:'pm', desc:'ATK+8 耐壓+10 — 文字就是武器', atkBonus:8,lckBonus:10,
+   skills_a:['把你說的話寫成反派','用文字讓你說不出話','說這個結局早就定好了','把你的缺點寫進主角','說這章節需要伏筆','引用了一句話讓你閉嘴','說你不懂這個隱喻','把對話寫得讓你看不懂'],
+   skills_b:['說在等靈感降臨','說這個段落要改','說截稿壓力很大','問說這樣讀起來順嗎','說角色不聽我的','把書稿收起來說不給看','說需要再沉澱一下','問說你覺得這樣合理嗎'],
+   ult:['·暢銷書輾壓術','·伏筆爆發大結局','·文字終結必殺技','·得獎感言讓你臉紅'],
+   type_a:'atk',type_b:'def',miss_a:0.15,miss_b:0.05},
+  {key:'mechanic', name:'汽車技師', icon:'🔧', cls:'eng', desc:'ATK+10 防禦+8 — 工具就是拳頭', atkBonus:10,defBonus:8,
+   skills_a:['說要更換的零件很貴','把問題說得很嚴重','說這個要等零件進貨','拿了一個你看不懂的檢測報告','說你的車況很差','突然又找到另一個問題','說這個不修以後會更貴','說原廠件還是副廠件你決定'],
+   skills_b:['說要等到下週才有空','問說有沒有保固','說這個不在保固範圍','把車子開進去又推出來','說可能要多兩天','問說要不要順便換機油','說先報估價你再決定','說這個我不確定要問一下'],
+   ult:['·全車大翻修終結技','·零件報價大爆炸','·引擎大當機風暴','·驗車不過最終宣判'],
+   type_a:'atk',type_b:'debuff',miss_a:0.12,miss_b:0.08},
+  {key:'contractor', name:'水電工', icon:'🪛', cls:'biz', desc:'ATK+8 速度+10 — 動手就是攻擊', atkBonus:8,spdBonus:10,
+   skills_a:['說這個要打牆很貴','突然說發現另一個問題','把管線拆了說要重拉','說師傅下週才有空','說這個要用特殊材料','拆開之後說比想像複雜','說電路有問題要全部換','問說要用哪個品牌'],
+   skills_b:['說先估個費用你考慮','問說幾樓幾號','說需要停電兩小時','說這個要等乾了才能用','問說廁所在哪','說師傅還在前一個工地','說下午兩點到五點都行','問說保固要幾年'],
+   ult:['·全屋翻新大爆炸','·漏水源頭終結術','·斷電大輾壓','·工程追加費最終報價'],
+   type_a:'atk',type_b:'atk',miss_a:0.15,miss_b:0.1},
+  {key:'civil', name:'公務員', icon:'🏛️', cls:'pm', desc:'防禦+15 速度-5 — 法規就是城牆', defBonus:15,spdMalus:5,
+   skills_a:['說這個沒有規定不能做','把公文蓋章讓你等三天','說承辦人不在請下週來','拿出一疊表格叫你填','說這個要跨局處協調','把你轉到另一個窗口','說這個規定是上面定的','叫你去等叫號'],
+   skills_b:['說需要補件才能繼續','問說有沒有帶身分證','說這個程序要走完','問說有沒有預約','說這個要到另一棟','問說是什麼業別','說今天已超過受理時間','叫你明天再來'],
+   ult:['·公文海輾壓術','·審查程序大爆炸','·法規條文終結技','·跨局處協調風暴'],
+   type_a:'def',type_b:'debuff',miss_a:0,miss_b:0.05},
+  {key:'professor', name:'大學教授', icon:'🎓', cls:'eng', desc:'ATK+6 耐壓+14 — 學術就是碾壓', atkBonus:6,lckBonus:14,
+   skills_a:['說你引用的文獻有問題','問說你的研究方法論是什麼','把論文退回說要大改','說這個議題很複雜要再看','拿出一篇40頁的文章叫你讀','問說你的假設依據是什麼','說這個結論太過武斷','把你的研究說成缺乏理論基礎'],
+   skills_b:['說辦公室時間才能討論','說這個要等期末再說','問說有沒有看指定閱讀','說這門課期末考很難','把給分標準說得很模糊','說論文需要再縝密','問說有沒有去圖書館','說這個 APA 格式不對'],
+   ult:['·論文否決大砲','·期末考終結宣言','·國科會計畫大爆炸','·學術圈輾壓風暴'],
+   type_a:'atk',type_b:'def',miss_a:0.1,miss_b:0},
+  {key:'hr', name:'人資專員', icon:'📁', cls:'pm', desc:'防禦+12 耐壓+10 — 笑裡藏刀', defBonus:12,lckBonus:10,
+   skills_a:['寄出績效考核通知','說這違反公司規定','開了一個關懷面談','把問題轉成 HR ticket','說要走正式流程','把你列入觀察名單','問說有沒有溝通問題','建議雙方好好談談'],
+   skills_b:['說一切都有紀錄','發出教育訓練邀請','說這要呈報主管','把對話截圖存檔','問是否有情緒困擾','說公司文化很重要','轉寄員工手冊','建立申訴管道讓你去填'],
+   ult:['·績效改善計畫','·全員會議召喚','·制度大輾壓','·離職面談啟動'],
+   type_a:'atk',type_b:'def',miss_a:0.1,miss_b:0},
+  {key:'exec', name:'高階主管', icon:'👔', cls:'pm', desc:'ATK+12 耐壓+10 — 一句話定生死', atkBonus:12,lckBonus:10,
+   skills_a:['說「這個方向不對」','問說這個的 ROI 是多少','把時程再砍一半','說「我想要的不是這個」','直接 call 跨部門','在簡報第一頁就否決','說「你覺得呢」然後沉默','把問題踢回去讓你想'],
+   skills_b:['說要再討論一下','建議先做 pilot','說「這個先 hold」','把決定推到下次會議','問有沒有 benchmark','說先看市場反應','要求再出一版','說這個我要想想'],
+   ult:['·一句話滅絕術','·主管壓頂大砲','·策略方向大轉彎','·優先級全面重洗'],
+   type_a:'atk',type_b:'atk',miss_a:0.08,miss_b:0.1},
+  {key:'cs', name:'客服達人', icon:'🎧', cls:'biz', desc:'速度+8 耐壓+14 — 耐壓值爆表', spdBonus:8,lckBonus:14,
+   skills_a:['「感謝您的來電」無限迴圈','說已轉接相關部門','把問題標成已解決','說請稍後再試','給你一個問卷填','說這是系統問題','把你推給另一個人','說正在為您處理中'],
+   skills_b:['說了解您的感受','轉移話題到其他功能','說我們會持續改善','建議您重新開機','問說有沒有收到確認信','說這是政策規定','叫你去看 FAQ','說我幫您記錄下來'],
+   ult:['·客訴終結術','·服務大崩潰','·無限轉接循環','·滿意度調查砲'],
+   type_a:'atk',type_b:'debuff',miss_a:0.1,miss_b:0.08},
+  {key:'intern', name:'實習生', icon:'🌱', cls:'des', desc:'速度+15 ATK-5 — 衝勁十足但不穩', spdBonus:15,atkMalus:5,
+   skills_a:['說「我 Google 到的是這樣」','截圖貼給學長姐問','說「這個我學校有學過」','把報告格式改了又改','問說這個要寄信還是 Slack','同時開了 12 個 tab','說「我不確定欸」','把檔案存在桌面上'],
+   skills_b:['說等一下我問一下','說「我再確認一下」','去複印室躲了半小時','說要先看一下文件','問說午餐在哪裡吃','說「那我回去想一想」','說有點忙先回去做','把東西交出去但少一頁'],
+   ult:['·熱情大爆炸','·菜鳥終極衝撞','·學長我不會啦啊','·錯誤百出終極版'],
+   type_a:'atk',type_b:'debuff',miss_a:0.28,miss_b:0.15},
+  {key:'freelance', name:'自由工作者', icon:'🏄', cls:'biz', desc:'ATK+10 速度+6 — 不受體制束縛', atkBonus:10,spdBonus:6,
+   skills_a:['說時程要重新討論','報價比預算高三倍','說這不在原始範疇','突然說有別的案子','把修改次數計費','說要先付訂金','交稿前才說需要素材','把版權保留說得很清楚'],
+   skills_b:['說在咖啡廳工作比較有靈感','開會說現在在外面','說截止日可以再談','問說能不能遠端就好','說靈感需要時間醞釀','把進度說得很模糊','不回訊息說在創作中','說改版要另外報價'],
+   ult:['·自由靈魂大爆發','·無限外包迴旋','·報價震撼彈','·不受約束終極形態'],
+   type_a:'atk',type_b:'atk',miss_a:0.2,miss_b:0.15},
+  {key:'ops', name:'營運主任', icon:'⚙️', cls:'biz', desc:'防禦+8 速度+10 — 流程就是鐵壁', defBonus:8,spdBonus:10,
+   skills_a:['說要走申請流程','把你加進會議行事曆','說系統要維護','要求填一份表單','把所有事情排進 SOP','說這要提前三天申請','把流程圖貼給你看','說這個沒有授權'],
+   skills_b:['流程大審查','說要做風險評估','把問題升級給主管','要求書面確認','說 SLA 有規定','建立一個新的流程','說這要跨部門協作','把你加進 CC 名單'],
+   ult:['·SOP 終極版','·流程大輾壓','·審查無盡迴圈','·跨部門協作風暴'],
+   type_a:'def',type_b:'debuff',miss_a:0,miss_b:0.1},
+  {key:'trainer', name:'健身教練', icon:'💪', cls:'biz', desc:'ATK+12 速度+8 — 體能就是碾壓', atkBonus:12,spdBonus:8,
+   skills_a:['說你的姿勢全部都錯','多加了十公斤讓你哭','說你今天不夠拼','把組數加到你趴下','說這週要突破自己','問說上次幾公斤來著','說你的飲食要全部改','說這個叫做燃脂心率'],
+   skills_b:['問說有沒有認真執行飲食計畫','說這樣練沒有用','問說昨天有沒有睡八小時','說差一點就要加課','問說蛋白質喝了嗎','說這個肌群還要再練','問說有沒有拍體態照','說進步太慢要換計畫'],
+   ult:['·地獄訓練終結砲','·體態大改造輾壓','·健身菜單大爆炸','·教練特訓最終形態'],
+   type_a:'atk',type_b:'debuff',miss_a:0.1,miss_b:0.08},
+  {key:'realtor', name:'房仲業務', icon:'🏠', cls:'biz', desc:'ATK+8 耐壓+12 — 說服就是力量', atkBonus:8,lckBonus:12,
+   skills_a:['說這個物件超搶手','今天看明天就沒了','說這個地段以後一定漲','把坪數說大了一點','說旁邊要蓋捷運了','問說你的預算是多少','說屋況很好只是比較舊','突然說還有另一組也在看'],
+   skills_b:['說這個價格已經是底限','問說可不可以今天決定','說房東人很好好說話','問說需不需要貸款協助','說我幫你去跟房東談','問說有沒有在看其他物件','說這個格局其實很好規劃','把缺點說成特色'],
+   ult:['·成交終結宣言','·物件稀缺大爆炸','·降價假消息風暴','·簽約最後一刻施壓'],
+   type_a:'atk',type_b:'atk',miss_a:0.18,miss_b:0.12},
+];
+
+// 依名字筆畫總數、字數、筆畫模式 → 決定職業
+const DEPT_MAP=Object.fromEntries(JOB_TABLE.map(j=>[j.key,j]));
+
+// ── 字義對照表：字 → 職業 key ──
+const CHAR_JOB_MAP={
+  // 科技/數位
+  '碼':'engineer','程':'engineer','網':'engineer','科':'engineer','技':'engineer','系':'engineer',
+  '資':'datascience','數':'datascience','析':'datascience','統':'datascience','算':'datascience',
+  // 設計/創意
+  '畫':'creator','藝':'creator','彩':'creator','美':'creator','色':'creator','設':'creator','繪':'creator',
+  '創':'creator','想':'creator','幻':'creator','夢':'creator','靈':'creator',
+  // 管理/協調
+  '管':'pm','企':'pm','劃':'pm','協':'pm','統':'pm','導':'pm','案':'pm','專':'pm',
+  // 傳播/媒體
+  '播':'journalist','報':'journalist','聞':'journalist','訊':'journalist','採':'journalist','媒':'journalist',
+  '演':'youtuber','拍':'youtuber','錄':'youtuber','頻':'youtuber','視':'youtuber',
+  '歌':'musician','樂':'musician','音':'musician','旋':'musician','曲':'musician','唱':'musician','琴':'musician',
+  '戲':'actor','劇':'actor','影':'actor','表':'actor','秀':'actor',
+  '文':'writer','書':'writer','著':'writer','詩':'writer','章':'writer','筆':'writer','稿':'writer',
+  // 醫療/教育
+  '醫':'doctor','診':'doctor','療':'doctor','護':'doctor','健':'doctor','病':'doctor',
+  '教':'teacher','學':'teacher','師':'teacher','訓':'teacher','課':'teacher','育':'teacher',
+  '授':'professor','研':'professor','論':'professor','術':'professor','博':'professor','碩':'professor',
+  // 法律/金融
+  '法':'lawyer','律':'lawyer','訟':'lawyer','判':'lawyer','辯':'lawyer','約':'lawyer',
+  '財':'finance','錢':'finance','帳':'finance','稅':'finance','算':'finance','款':'finance',
+  '金':'banker','銀':'banker','富':'banker','貸':'banker','存':'banker','幣':'banker',
+  // 餐飲/服務
+  '廚':'chef','烹':'chef','料':'chef','飪':'chef','味':'chef','食':'chef',
+  '咖':'barista','啡':'barista','茶':'barista','飲':'barista',
+  '送':'rider','速':'rider','快':'rider','遞':'rider','配':'rider',
+  // 業務/行銷
+  '業':'sales','售':'sales','賣':'sales','貿':'sales','商':'sales','購':'sales',
+  '行':'marketing','品':'marketing','牌':'marketing','推':'marketing','廣':'marketing',
+  '房':'realtor','地':'realtor','仲':'realtor','產':'realtor','宅':'realtor','屋':'realtor',
+  // 勞動/技術
+  '修':'mechanic','修':'mechanic','機':'mechanic','車':'mechanic','械':'mechanic',
+  '工':'contractor','建':'contractor','電':'contractor','水':'contractor','裝':'contractor',
+  '練':'trainer','肌':'trainer','體':'trainer','力':'trainer','強':'trainer','健':'trainer',
+  // 行政/管理
+  '政':'civil','官':'civil','公':'civil','府':'civil','局':'civil','署':'civil',
+  '人':'hr','資':'hr','招':'hr','聘':'hr','薪':'hr',
+  '長':'exec','總':'exec','董':'exec','帥':'exec','首':'exec','主':'exec',
+  '服':'cs','客':'cs','詢':'cs','問':'cs','答':'cs',
+  // 特殊
+  '習':'intern','新':'intern','試':'intern','練':'intern',
+  '自':'freelance','由':'freelance','獨':'freelance','接':'freelance',
+  '運':'ops','流':'ops','程':'ops','序':'ops','制':'ops',
+};
+
+function assignJob(name){
+  const chars=[...name];
+  // 第一輪：完整字比對
+  const scores={};
+  for(const ch of chars){
+    const key=CHAR_JOB_MAP[ch];
+    if(key) scores[key]=(scores[key]||0)+2;
+  }
+  // 第二輪：英文名字按首字母聲響分類
+  const lname=name.toLowerCase();
+  if([...lname].every(c=>/[a-z\s]/.test(c))){
+    const hard='bcdfgkpqrstvxz';
+    const soft='aehijlmnouwy';
+    const hardCount=[...lname].filter(c=>hard.includes(c)).length;
+    const softCount=[...lname].filter(c=>soft.includes(c)).length;
+    const len=name.length;
+    if(len<=4) scores['rider']=(scores['rider']||0)+1;
+    if(len>=8) scores['professor']=(scores['professor']||0)+1;
+    if(hardCount>softCount) scores['mechanic']=(scores['mechanic']||0)+1;
+    else scores['musician']=(scores['musician']||0)+1;
+    // 英文名首字母對應職業
+    const firstLetterMap={a:'actor',b:'banker',c:'chef',d:'datascience',e:'engineer',
+      f:'freelance',g:'trainer',h:'hr',i:'intern',j:'journalist',k:'creator',
+      l:'lawyer',m:'musician',n:'cs',o:'ops',p:'pm',q:'professor',
+      r:'realtor',s:'sales',t:'teacher',u:'youtuber',v:'actor',
+      w:'writer',x:'exec',y:'youtuber',z:'contractor'};
+    const first=firstLetterMap[lname[0]];
+    if(first) scores[first]=(scores[first]||0)+2;
+  }
+  // 有命中就取最高分
+  if(Object.keys(scores).length>0){
+    const best=Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];
+    const job=DEPT_MAP[best];
+    if(job) return job;
+  }
+  // 退回：筆畫邏輯
+  const total=chars.reduce((a,c)=>a+getCJKStrokes(c),0);
+  const len=chars.length;
+  return JOB_TABLE[(total*3+len*7)%JOB_TABLE.length];
+}
+
+const CONQUERS_JOB={
+  engineer:'creator', creator:'pm', pm:'datascience', datascience:'marketing',
+  marketing:'journalist', journalist:'youtuber', youtuber:'doctor', doctor:'teacher',
+  teacher:'lawyer', lawyer:'chef', chef:'barista', barista:'rider',
+  rider:'sales', sales:'finance', finance:'banker', banker:'musician',
+  musician:'actor', actor:'writer', writer:'mechanic', mechanic:'contractor',
+  contractor:'civil', civil:'professor', professor:'hr', hr:'exec',
+  exec:'cs', cs:'intern', intern:'freelance', freelance:'ops',
+  ops:'trainer', trainer:'realtor', realtor:'engineer',
+};
+
+
+function getCJKStrokes(ch){
+  const T={'一':1,'二':2,'三':3,'口':3,'山':3,'土':3,'大':3,'女':3,'小':3,'子':3,'工':3,'才':3,'火':4,'木':4,'水':4,'心':4,'王':4,'天':4,'五':4,'六':4,'中':4,'不':4,'方':4,'文':4,'石':5,'生':5,'用':5,'白':5,'目':5,'北':5,'平':5,'正':5,'主':5,'有':6,'光':6,'名':6,'成':6,'地':6,'江':6,'百':6,'全':6,'回':6,'好':6,'安':6,'志':7,'李':7,'林':7,'武':7,'男':7,'秀':7,'良':7,'見':7,'里':7,'周':8,'奇':8,'明':8,'昌':8,'炎':8,'直':8,'金':8,'青':8,'亮':9,'信':9,'南':9,'風':9,'城':9,'俊':9,'春':9,'柳':9,'相':9,'美':9,'侯':9,'建':9,'政':9,'原':10,'海':10,'曹':10,'峰':10,'真':10,'孫':10,'國':11,'強':11,'深':11,'清':11,'理':11,'彩':11,'勝':12,'博':12,'葛':12,'業':13,'義':13,'楓':13,'源':13,'聖':13,'嘉':14,'瑜':14,'銘':14,'維':14,'福':14,'寧':14,'德':15,'諸':15,'廣':15,'樂':15,'賢':15,'輝':15,'操':16};
+  if(T[ch])return T[ch];
+  const cp=ch.codePointAt(0);
+  if(cp>=0x4E00&&cp<=0x9FFF)return((cp-0x4E00)%15)+3;
+  if(ch>='A'&&ch<='Z')return ch.charCodeAt(0)-64;
+  if(ch>='a'&&ch<='z')return ch.charCodeAt(0)-96;
+  return 4;
+}
+
+// ── 命運卡 ──
+const FATE_POOL=[
+  {name:'主管剛好出差',icon:'✈️',type:'blessing',atkBonus:15,desc:'ATK+15 — 沒人管，超自由'},
+  {name:'咖啡因爆棚',icon:'☕',type:'blessing',spdBonus:20,desc:'速度+20 — 今天連喝三杯'},
+  {name:'提前收到獎金',icon:'💰',type:'blessing',lckBonus:25,desc:'耐壓+25 — 心情超好'},
+  {name:'工作被稱讚了',icon:'⭐',type:'blessing',atkBonus:10,defBonus:10,desc:'ATK+10 防禦+10 — 信心大爆發'},
+  {name:'今天有零食',icon:'🍪',type:'blessing',defBonus:20,desc:'防禦+20 — 吃飽才有力氣'},
+  {name:'電腦當機了',icon:'💀',type:'curse',atkMalus:15,desc:'ATK-15 — 什麼都做不了'},
+  {name:'需求又改了',icon:'🔄',type:'curse',defMalus:20,desc:'防禦-20 — 心防徹底崩潰'},
+  {name:'會議開了三小時',icon:'😴',type:'curse',spdMalus:20,desc:'速度-20 — 累到說不出話'},
+  {name:'昨晚加班到深夜',icon:'🌙',type:'curse',lckMalus:20,desc:'耐壓-20 — 心神渙散'},
+  {name:'平靜的一天',icon:'🌤',type:'neutral',desc:'沒什麼特別的，靠實力吧'},
+];
+
+// ── 隨機事件 ──
+const EVENTS=[
+  {text:'系統大當機！雙方本回合無法使出技能型攻擊',effect:(s1,s2,hp,fl)=>{fl.systemDown=true;}},
+  {text:'突然收到 URGENT 信！雙方速度本回合 -20%',effect:(s1,s2,hp,fl)=>{fl.urgentMail=true;}},
+  {text:'有人帶了甜點來辦公室！HP 較低的一方回復 20',effect:(s1,s2,hp)=>{if(hp[0]<hp[1])hp[0]=Math.min(s1._maxHp||999,hp[0]+20);else hp[1]=Math.min(s2._maxHp||999,hp[1]+20);}},
+  {text:'主管突然要求 5 分鐘內出報告！雙方各損失 15 HP',effect:(s1,s2,hp)=>{hp[0]-=15;hp[1]-=15;}},
+  {text:'WiFi 斷線！對手本回合跳過反擊',effect:(s1,s2,hp,fl)=>{fl.skipCounter=true;}},
+  {text:'氣氛突然很融洽！雙方暴擊率本回合翻倍',effect:(s1,s2,hp,fl)=>{fl.doubleCrit=true;}},
+  {text:'午餐時間到！雙方都回復 10 HP',effect:(s1,s2,hp)=>{hp[0]=Math.min(s1._maxHp||999,hp[0]+10);hp[1]=Math.min(s2._maxHp||999,hp[1]+10);}},
+  {text:'週五下午！所有人速度+20，招式失手率-10%',effect:(s1,s2,hp,fl)=>{fl.fridayVibes=true;}},
+];
+
+function pickWord(arr,seed){return arr[seed%arr.length];}
+
+function getNameVal(name){
+  return [...name].reduce((a,ch)=>a+getCJKStrokes(ch),0);
+}
+
+function generateSkills(name,job,nameVal,chars){
+  const seed1=nameVal, seed2=chars.length*7+nameVal%5;
+  const skA=pickWord(job.skills_a,seed1);
+  const skB=pickWord(job.skills_b,seed2);
+  const ult=pickWord(job.ult,(seed1+seed2)%4);
+  return [
+    {name:skA, type:job.type_a, mult:job.type_a==='atk'?1.5:0, miss:job.miss_a, desc:skillDescOffice(job.type_a,skA), badge:job.type_a==='atk'?'atk':job.type_a==='def'?'def':'spd', skillCls:job.type_a==='atk'?'atk-skill':'spd-skill'},
+    {name:skB, type:job.type_b, mult:job.type_b==='atk'?1.4:0, miss:job.miss_b, desc:skillDescOffice(job.type_b,skB), badge:job.type_b==='atk'?'atk':job.type_b==='def'?'def':'spd', skillCls:job.type_b==='def'?'def-skill':job.type_b==='debuff'?'spd-skill':'atk-skill'},
+    {name:`${name}${ult}`, type:'ult', mult:2.2, miss:0.22, desc:`使出職場終極技，${name} 的威名震動全場`, badge:'ult', skillCls:'ult-skill', cooldown:3},
+  ];
+}
+
+function skillDescOffice(type,word){
+  if(type==='atk')    return `「${word}」— 精準打擊，對手精神受損`;
+  if(type==='def')    return `「${word}」— 成功防禦，子彈飛一會兒`;
+  if(type==='debuff') return `「${word}」— 對手速度大幅下降`;
+  return `「${word}」— 全力出擊`;
+}
+
+function calcStats(name){
+  if(!name)return null;
+  const chars=[...name];
+  const nameVal=getNameVal(name);
+  const charCount=chars.length;
+  const job=assignJob(name);
+  const b={atk:job.atkBonus||0,def:job.defBonus||0,spd:job.spdBonus||0,lck:job.lckBonus||0};
+  const atkMalus=job.atkMalus||0;
+  const atk=Math.min(99,Math.round((nameVal*3+charCount*8)%60+25+b.atk-atkMalus));
+  const def=Math.min(99,Math.round((nameVal*2+charCount*5)%50+20+b.def));
+  const spd=Math.min(99,Math.round(100-nameVal*1.5%40+charCount*4+b.spd));
+  const lck=Math.min(99,Math.round((nameVal+charCount*7)%40+15+b.lck));
+  const maxHp=80+nameVal*2+charCount*10;
+  const skills=generateSkills(name,job,nameVal,chars);
+  return{atk,def,spd,lck,maxHp,dept:job.key,job,elements:[job.key],name,chars,nameVal,charCount,skills};
+}
+
+function applyFate(s,f){
+  if(!f)return;
+  if(f.atkBonus)s.atk=Math.min(99,s.atk+f.atkBonus);
+  if(f.defBonus)s.def=Math.min(99,s.def+f.defBonus);
+  if(f.spdBonus)s.spd=Math.min(99,s.spd+f.spdBonus);
+  if(f.lckBonus)s.lck=Math.min(99,s.lck+f.lckBonus);
+  if(f.atkMalus)s.atk=Math.max(5,s.atk-f.atkMalus);
+  if(f.defMalus)s.def=Math.max(5,s.def-f.defMalus);
+  if(f.spdMalus)s.spd=Math.max(5,s.spd-f.spdMalus);
+  if(f.lckMalus)s.lck=Math.max(5,s.lck-f.lckMalus);
+}
+function applyDept(s){} // 已在 calcStats 套用，保留空函式避免報錯
+function drawFate(){return FATE_POOL[Math.floor(Math.random()*FATE_POOL.length)];}
+
+function renderDeptCard(p,job){
+  const el=document.getElementById('dept'+p);
+  el.className='dept-card '+job.cls;
+  el.innerHTML=`<span class="dept-icon">${job.icon}</span><div><div class="dept-name">${job.name}</div><div class="dept-desc">${job.desc}</div></div>`;
+}
+
+function renderCard(p,s){
+  document.getElementById('av'+p).textContent=[...s.name][0];
+  ['atk','def','spd','lck'].forEach(st=>{
+    document.getElementById(st+p).textContent=s[st];
+    document.getElementById(st+p+'-bar').style.width=s[st]+'%';
+  });
+  document.getElementById('hp'+p+'-val').textContent=Math.round(s.maxHp);
+  document.getElementById('hp'+p+'-bar').style.width='100%';
+  const tagsEl=document.getElementById('tags'+p); tagsEl.innerHTML='';
+  const d=DEPT_MAP[s.dept];
+  if(d){const sp=document.createElement('span');sp.className='tag tag-'+s.dept;sp.textContent=d.icon+' '+d.name;tagsEl.appendChild(sp);}
+  const cn=document.createElement('span');cn.className='tag tag-neutral';cn.textContent=s.charCount+'字';tagsEl.appendChild(cn);
+  const sv=document.createElement('span');sv.className='tag tag-neutral';sv.textContent='筆畫'+s.nameVal;tagsEl.appendChild(sv);
+
+  const skEl=document.getElementById('skills'+p); skEl.innerHTML='';
+  s.skills.forEach(sk=>{
+    const div=document.createElement('div'); div.className='skill-item '+(sk.skillCls||'atk-skill');
+    const cdTxt=sk.cooldown?`<span class="skill-cd">CD ${sk.cooldown}</span>`:'';
+    const missTxt=sk.miss>0?`<span class="skill-cd">失手率 ${Math.round(sk.miss*100)}%</span>`:'';
+    div.innerHTML=`<div class="skill-name-row"><span class="skill-name">${sk.name}</span><span class="skill-badge badge-${sk.badge}">${{atk:'攻擊',def:'防禦',spd:'減速',ult:'必殺'}[sk.badge]}</span>${cdTxt}${missTxt}</div><div class="skill-desc">${sk.desc}</div>`;
+    skEl.appendChild(div);
+  });
+  document.getElementById('sn'+p).textContent=s.name;
+}
+
+function updateCard(p){
+  const name=document.getElementById('name'+p).value.trim();
+  document.getElementById('av'+p).textContent=name?[...name][0]:'？';
+  if(name){const s=calcStats(name);renderCard(p,s);}
+}
+
+function updateStatus(hp,s1,s2,round){
+  document.getElementById('shp1').textContent=Math.max(0,Math.round(hp[0]));
+  document.getElementById('shp2').textContent=Math.max(0,Math.round(hp[1]));
+  document.getElementById('shp1-bar').style.width=Math.max(0,Math.round(hp[0]/s1.maxHp*100))+'%';
+  document.getElementById('shp2-bar').style.width=Math.max(0,Math.round(hp[1]/s2.maxHp*100))+'%';
+  if(round!==null)document.getElementById('sRound').textContent=round>0?`第 ${round} 回合`:'決鬥中';
+}
+
+const elBonus=(a,d)=>CONQUERS_JOB[a.dept]===d.dept?1.3:CONQUERS_JOB[d.dept]===a.dept?0.75:1.0;
+
+let battleRunning=false;
+
+async function startBattle(){
+  if(battleRunning)return;
+  const n1=document.getElementById('name1').value.trim();
+  const n2=document.getElementById('name2').value.trim();
+  const log=document.getElementById('log');
+  if(!n1||!n2){log.innerHTML='<span style="color:var(--muted);font-style:italic;">請先輸入兩位同事的名字</span>';return;}
+
+  battleRunning=true;
+  document.getElementById('fightBtn').disabled=true;
+  ['card1','card2'].forEach(id=>{
+    document.getElementById(id).classList.remove('winner','collapse-p1','collapse-p2');
+  });
+  document.getElementById('resultBanner').classList.remove('show');
+
+  const s1=calcStats(n1), s2=calcStats(n2);
+  renderDeptCard(1,s1.job); renderDeptCard(2,s2.job);
+  applyDept(s1); applyDept(s2);
+  const fate1=drawFate(), fate2=drawFate();
+  applyFate(s1,fate1); applyFate(s2,fate2);
+  s1._maxHp=s1.maxHp; s2._maxHp=s2.maxHp;
+  renderCard(1,s1); renderCard(2,s2);
+
+  let hp=[s1.maxHp,s2.maxHp];
+  const cds1=s1.skills.map(()=>0), cds2=s2.skills.map(()=>0);
+  const collapsed=[false,false], reviveUsed=[false,false];
+  log.innerHTML='';
+  document.getElementById('sCollapse').textContent='';
+  updateStatus(hp,s1,s2,0);
+
+  function addLog(text,cls){const d=document.createElement('div');d.className='log-line '+(cls||'');d.textContent=text;log.appendChild(d);log.scrollTop=log.scrollHeight;}
+  function updateHp(){
+    document.getElementById('hp1-bar').style.width=Math.max(0,Math.round(hp[0]/s1.maxHp*100))+'%';
+    document.getElementById('hp2-bar').style.width=Math.max(0,Math.round(hp[1]/s2.maxHp*100))+'%';
+    document.getElementById('hp1-val').textContent=Math.max(0,Math.round(hp[0]));
+    document.getElementById('hp2-val').textContent=Math.max(0,Math.round(hp[1]));
+  }
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+  function checkCollapse(idx,stats,hpVal){
+    if(!collapsed[idx]&&hpVal>0&&hpVal/stats.maxHp<0.3){
+      collapsed[idx]=true;
+      document.getElementById('card'+(idx+1)).classList.add(idx===0?'collapse-p1':'collapse-p2');
+      addLog(`💥 ${stats.name} 進入【崩潰加班模式】！攻擊暴漲，防禦歸零，開始亂出招！`,'log-collapse');
+      const col=document.getElementById('sCollapse');
+      col.textContent=(col.textContent?col.textContent+' / ':'')+`${stats.name} 崩潰💥`;
+    }
+  }
+
+  function pickSkill(stats,cds){
+    if(cds[2]===0&&Math.random()<0.28){cds[2]=stats.skills[2].cooldown;return{sk:stats.skills[2],idx:2};}
+    if(Math.random()<0.5&&cds[0]===0)return{sk:stats.skills[0],idx:0};
+    if(cds[1]===0)return{sk:stats.skills[1],idx:1};
+    return null;
+  }
+
+  addLog(`📬 ${n1} 抽到今日運勢：【${fate1.name}】${fate1.icon}`,'log-fate');
+  await sleep(300);
+  addLog(`📬 ${n2} 抽到今日運勢：【${fate2.name}】${fate2.icon}`,'log-fate');
+  await sleep(300);
+  addLog(`🏢 ${n1} 的職稱是「${s1.job.name}」，${n2} 的職稱是「${s2.job.name}」`,'log-fate');
+  await sleep(400);
+  addLog('── 職場決鬥開始 ──','log-sep');
+  await sleep(400);
+
+  let round=1;
+  while(hp[0]>0&&hp[1]>0&&round<=20){
+    await sleep(440);
+    updateStatus(hp,s1,s2,round);
+    const fl={};
+    if(Math.random()<0.22){
+      const ev=EVENTS[Math.floor(Math.random()*EVENTS.length)];
+      ev.effect(s1,s2,hp,fl);
+      updateHp(); updateStatus(hp,s1,s2,round);
+      addLog(`⚡ 職場事件：${ev.text}`,'log-event');
+      await sleep(400);
+      if(hp[0]<=0||hp[1]<=0)break;
+    }
+
+    const order=s1.spd>=s2.spd?[[s1,s2,cds1,0,1],[s2,s1,cds2,1,0]]:[[s2,s1,cds2,1,0],[s1,s2,cds1,0,1]];
+    let ti=0;
+    for(const[atker,defer,acd,ai,di]of order){
+      if(hp[0]<=0||hp[1]<=0)break;
+      if(fl.skipCounter&&ti===1){addLog(`${defer.name} WiFi 斷線，無法反擊！`,'log-miss');ti++;continue;}
+      ti++;
+      acd.forEach((_,i)=>{if(acd[i]>0)acd[i]--;});
+      const bonus=elBonus(atker,defer);
+      const pick=pickSkill(atker,acd);
+      const logCls=ai===0?'log-skill-p1':'log-skill-p2';
+      const isCollapsed=collapsed[ai];
+      const defCollapsed=collapsed[di];
+
+      if(pick&&pick.sk.type!=='def'&&pick.sk.type!=='debuff'){
+        const sk=pick.sk;
+        let mr=sk.miss||0;
+        if(fl.systemDown&&sk.badge!=='ult')mr=0.8;
+        if(fl.urgentMail)mr=Math.min(0.9,mr+0.15);
+        if(fl.fridayVibes)mr=Math.max(0,mr-0.1);
+        if(Math.random()<mr){
+          addLog(`第${round}回合  ${atker.name} 使出「${sk.name}」── 失手了！對方沒在看`,'log-miss');
+          await sleep(280);continue;
+        }
+        const crit=Math.random()<(fl.doubleCrit?atker.lck/90:atker.lck/180);
+        let mult=sk.mult;
+        if(isCollapsed)mult*=1.8;
+        const defFactor=defCollapsed?0:0.35;
+        let dmg=Math.max(1,Math.round((atker.atk*mult-defer.def*defFactor)*bonus*(crit?1.7:1)*(0.88+Math.random()*0.25)));
+        hp[di]-=dmg; updateHp();
+        checkCollapse(di,[s1,s2][di],hp[di]);
+        const extras=[crit?'【會心一擊】':'',bonus>1?'【部門剋制】':bonus<1?'【部門抵抗】':'',isCollapsed?'【崩潰爆發】':''].filter(Boolean).join(' ');
+        updateStatus(hp,s1,s2,round);
+        addLog(`第${round}回合  ${atker.name} 使出「${sk.name}」→ ${dmg} 傷害 ${extras}`,isCollapsed?'log-revenge':logCls);
+        if(isCollapsed&&Math.random()<0.35&&hp[di]>0){
+          await sleep(200);
+          const bd=Math.max(1,Math.round(atker.atk*0.6*(0.8+Math.random()*0.4)));
+          hp[di]-=bd; updateHp();
+          checkCollapse(di,[s1,s2][di],hp[di]);
+          updateStatus(hp,s1,s2,round);
+          addLog(`第${round}回合  ↳ ${atker.name} 連環出招！再追 ${bd} 傷害`,'log-revenge');
+        }
+      }else if(pick&&(pick.sk.type==='def'||pick.sk.type==='debuff')){
+        const eff=pick.sk.type==='def'?'進入防守模式':'讓對手速度下降';
+        addLog(`第${round}回合  ${atker.name} 使出「${pick.sk.name}」，${eff}！`,logCls);
+      }else{
+        const dodge=Math.random()<(isCollapsed?0:(fl.fridayVibes?defer.spd/200:defer.spd/320));
+        if(dodge){addLog(`第${round}回合  ${defer.name} 裝作沒看到，成功閃避`,'log-atk');}
+        else{
+          const crit=Math.random()<(fl.doubleCrit?atker.lck/100:atker.lck/200);
+          const defFactor=defCollapsed?0:0.4;
+          let atkMult=isCollapsed?1.8:1;
+          let dmg=Math.max(1,Math.round((atker.atk*atkMult-defer.def*defFactor)*bonus*(crit?1.8:1)*(0.85+Math.random()*0.3)));
+          hp[di]-=dmg; updateHp();
+          checkCollapse(di,[s1,s2][di],hp[di]);
+          updateStatus(hp,s1,s2,round);
+          addLog(`第${round}回合  ${atker.name} 普通出招 → ${dmg} 傷害${crit?' 【會心一擊】':''}${bonus>1?' 【剋制】':''}`,isCollapsed?'log-revenge':'log-atk');
+        }
+      }
+      await sleep(300);
+    }
+
+    if(round<=2&&(hp[0]<=0||hp[1]<=0)){
+      const di=hp[0]<=0?0:1;
+      const ds=[s1,s2][di];
+      if(!reviveUsed[di]){
+        reviveUsed[di]=true;
+        await sleep(500);
+        const revHp=Math.round(ds.maxHp*0.4);
+        hp[di]=revHp; updateHp(); updateStatus(hp,s1,s2,round);
+        addLog(`✨ 奇蹟！${ds.name} 喝了一口咖啡，以 ${revHp} 體力重新爬起來繼續上班！`,'log-revive');
+        await sleep(600);
+      }
+    }
+    round++;
+  }
+
+  await sleep(500);
+  addLog('── 職場決鬥結束 ──','log-sep');
+  const banner=document.getElementById('resultBanner');
+  const titleEl=document.getElementById('resultTitle');
+  const subEl=document.getElementById('resultSub');
+  const deptName=d=>(DEPT_MAP[d]?DEPT_MAP[d].name:'職場');
+  if(hp[0]>hp[1]){
+    titleEl.textContent=`🏆 ${n1} 獲勝！`;
+    subEl.textContent=`剩餘體力 ${Math.round(hp[0])}｜${deptName(s1.dept)}的驕傲${collapsed[0]?' ｜ 崩潰反殺傳說✨':''}`;
+    document.getElementById('card1').classList.add('winner');
+  }else if(hp[1]>hp[0]){
+    titleEl.textContent=`🏆 ${n2} 獲勝！`;
+    subEl.textContent=`剩餘體力 ${Math.round(hp[1])}｜${deptName(s2.dept)}的驕傲${collapsed[1]?' ｜ 崩潰反殺傳說✨':''}`;
+    document.getElementById('card2').classList.add('winner');
+  }else{
+    titleEl.textContent='🤝 平手收場';
+    subEl.textContent='勢均力敵，建議兩人去喝一杯和解';
+  }
+  banner.classList.add('show');
+  updateStatus(hp,s1,s2,null);
+  window.scrollTo({top:0,behavior:'smooth'});
+  battleRunning=false;
+  document.getElementById('fightBtn').disabled=false;
+}
+
+updateCard(1);
+updateCard(2);
+</script>
+</body>
+</html>
